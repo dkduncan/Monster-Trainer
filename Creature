@@ -1,0 +1,236 @@
+class Creature {
+  float hungerLevel;//operates on a 1 - 500 scale
+  float energyLevel;
+  int loveLevel;
+  int strengthLevel;
+  int healthLevel;
+  int days;
+  int startingDays;
+  int opponentHealth;
+  boolean winning;
+  boolean losing;
+  int battleNumber;
+  int startingHealth;
+  int battlecounter;
+
+  Creature() {
+    this.hungerLevel = 250;
+    this.energyLevel = 250;
+    this.loveLevel = 0;
+    this.strengthLevel = 0;
+    this.healthLevel  = 1000;
+    days = 34;
+    startingDays = 34;
+    opponentHealth = 1500;
+    winning = false;
+    losing = false;
+    battleNumber = 1;
+    battlecounter = 0;
+  }
+
+  void feed() {
+    if (hungerLevel <= 350) {// makes sure it can't be overfed
+      hungerLevel += 150;
+      loveLevel += 10;
+      if (energyLevel <= 425) {
+        energyLevel += 75;
+      }
+      else {
+        energyLevel = 500;
+      }
+      days -= 1;
+    }
+    else if (hungerLevel < 500) {
+      hungerLevel = 500;
+    }
+  }
+
+  boolean inSpace() {
+    if ( mouseX <= 376 && mouseX >= 222 && mouseY >= 223 && mouseY <= 380) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  void train() {
+    int counter = 0;
+    if (hungerLevel >= 74 && energyLevel >= 99) {
+      counter++;
+      loveLevel -= 10;
+      energyLevel -= 100;
+      hungerLevel -= 75;
+      if (loveLevel >= 50) {
+        strengthLevel += (loveLevel/4);
+      }
+      else {
+        strengthLevel += 10;
+      }
+      days -= 1;
+    }
+    else if (hungerLevel < 74) {
+      println("Your creature is too hungry to train.");
+    }
+    else if (energyLevel < 99) {
+      println("Your creature is too tired to train.");
+    }
+  }
+
+  void play() {
+    if (hungerLevel >= 24 && energyLevel >= 49) {
+      loveLevel += 25;
+      energyLevel -=50;
+      hungerLevel -=25;
+      days -= 1;
+    }
+    else if (hungerLevel < 24) {
+      println("Your creature is too hungry to play.");
+    }
+    else if (energyLevel < 49) {
+      println("Your creature is too tired to play.");
+    }
+  }
+
+  void rest() {
+    this.energyLevel = 500;
+    days -= 1;
+    healthLevel += 100;
+    startingHealth = healthLevel;
+  }
+
+  void win() {
+    int damage;
+    if (!lost() && !won()) {
+      damage = (int)random(strengthLevel-50, strengthLevel+50);
+      opponentHealth -= damage;
+      println("You have done " + damage + " damage to your opponent.");
+      println("His remaining health is " + opponentHealth);
+      if (won()) {
+        println("You have won the battle! Next battle!");
+        opponentHealth = 1250 * battleNumber;
+        battleNumber += 1;
+        healthLevel = startingHealth;
+      }
+      else if (won() && battleNumber == 5) {
+        println("You have won the championship! Congratulations!");
+      }
+    }
+  }
+
+  boolean won() {
+    if (opponentHealth <= 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  void lose() {
+    if (!lost() && !won()) {
+      int damage = (int) random(150 * battleNumber, 200 * battleNumber);
+      this.healthLevel -= damage;
+      print(saved + " took ");
+      println(damage + " points of damage.");
+      println("Remaining HP is " + healthLevel);
+      if (lost()) {
+        println("You have lost the battle.");
+      }
+    }
+  }
+
+  boolean lost() {
+    if (this.healthLevel <= 0 ) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  void battle(int choice) {
+    //kick(1) defeats punch(2)
+    //punch(2) defeats throw(3)
+    //throw(3) defeats kick(1)
+    
+    if (battleNumber == 4) {
+      battlecounter++;
+    }
+
+    
+    int opponent = (int)random(1, 4);
+    if (choice == 1 && opponent == 2 && !won() && !lost()) {
+      //monster wins
+      println(saved + " used kick! Opponent used punch!");
+      println(saved + " wins!");
+      winning = true;
+      losing = false;
+      win();
+    }
+    else if (choice == 1 && opponent == 3 && !won() && !lost()) {
+      //opponent wins
+      println(saved + " used kick! Opponent used throw!");
+      println("Opponent wins!");
+      winning = false;
+      losing = true;
+      lose();
+    }
+    else if (choice == 1 && opponent == 1 && !won() && !lost()) {
+      //tie
+      println(saved + " used kick! Opponent used kick!");
+      println("Tie!");
+      winning = false;
+      losing = false;
+    }
+    else if (choice == 2 && opponent == 1 && !won() && !lost()) {
+      //opponent wins
+      println(saved + " used punch! Opponent used kick!");
+      println("Opponent wins!");
+      lose();
+      winning = false;
+      losing = true;
+    }
+    else if (choice == 2 && opponent == 3 && !won() && !lost()) {
+      //monster wins
+      println(saved + " used punch! Opponent used throw!");
+      println(saved + " wins!");
+      win();
+      winning = true;
+      losing = false;
+    }
+    else if (choice == 2 && opponent == 2 && !won() && !lost()) {
+      //tie
+      println(saved + " used punch! Opponent used punch!");
+      println("Tie!");
+      winning = false;
+      losing = false;
+    }
+    else if (choice == 3 && opponent == 1 && !won() && !lost()) {
+      //monster wins
+      println(saved + " used throw! Opponent used kick!");
+      println(saved + " wins!");
+      win();
+      winning = true;
+      losing = false;
+    }
+    else if (choice == 3 && opponent == 2 && !won() && !lost()) {
+      //opponent wins
+      println(saved + " used throw! Opponent used punch!");
+      println("Opponent wins!");
+      lose();
+      winning = false;
+      losing = true;
+    }
+    else if (choice == 3 && choice == 3 && !won() && !lost()) {
+      //tie
+      println(saved + " used throw! Opponent used throw!");
+      println("Tie!");
+      winning = false;
+      losing =  false;
+    }
+    else {
+      println("Error. Opponent = " + opponent);
+    }
+  }
+}
