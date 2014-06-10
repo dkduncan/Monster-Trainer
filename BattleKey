@@ -1,0 +1,18 @@
+class BattleKey {
+  
+  BattleKey(int X, String text, String other) {
+    stroke(0);
+    strokeWeight(3);
+    fill(170);
+    rect(X, 500, 60, 60);
+    noStroke();
+    fill(185);
+    rect(X + 10, 510, 40, 40);
+    fill(0);
+    textSize(35);
+    textAlign(CENTER, CENTER);
+    text(text, X + 27, 535);
+    textSize(32);
+    text(other, X + 27, 585);
+  }
+}  
