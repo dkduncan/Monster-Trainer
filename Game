@@ -1,0 +1,207 @@
+import ddf.minim.*;
+Minim minim;
+AudioPlayer player;
+AudioPlayer player2;
+
+PImage Heart, Calender, Egg, RP, P, RPid, Pid, RS, S, RQ, Q, RB, B;
+
+Creature Kiki;
+Body body;
+KeyManager keyManager;
+Eyes eyes;
+StatDisplay statDisplay;
+
+PFont myFont; 
+PFont battleFont;
+
+
+String saved = "";
+String typing = "";
+int counter = 0;
+boolean inform;
+
+void setup() {
+  size(600, 600);
+  Calender = loadImage("blank-calendar-md.png");
+  Calender.resize(0, 150);
+  Egg = loadImage("Egg.png");
+  Egg.resize(0, 200);
+  RP = loadImage("Regular_Politoed.png");
+  P = loadImage("Politoed.png");
+  RPid = loadImage("Regular_Pidgeot.png");
+  Pid = loadImage("Attack_Pidgeot.png");
+  RS = loadImage("Regular_Slaking.png");
+  S = loadImage("Attack_Slaking.png");
+  RQ = loadImage("Attack_Quilava.png");
+  Q = loadImage("Regular_Quilava.png");
+  RB = loadImage("Regular_Beartic.png");
+  B = loadImage("Attack_Beartic.png");
+  minim = new Minim(this);
+  player = minim.loadFile("mainSong.mp3");
+  player2 = minim.loadFile("battleSong.mp3");
+
+  battleFont = loadFont("ConvoyNormal-48.vlw");
+  myFont = createFont("cheri", 50);
+  textAlign(CENTER, CENTER);
+
+  Kiki = new Creature();
+  statDisplay = new StatDisplay();
+  keyManager = new KeyManager();
+  player.loop();
+}
+
+void draw() {
+  if (Kiki.days > 0) {
+    background(0, 150, 255);
+    textFont(myFont);
+  }
+  else {
+    background(250, 250, 0);
+    textFont(battleFont);
+  }
+
+  //text outputter
+  if (Kiki.days == Kiki.startingDays) {
+    text("Welcome to", width/2, height/3);
+    text("Monster Trainer", width/2, height/3 + 40);
+    textSize(30);
+    text("Press any button to continue", width/2, height/2 + 60);
+  }
+  else if (Kiki.days == (Kiki.startingDays - 1)) {
+    textSize(25);
+    text("This is the egg for your creature!", width/2, height/5);
+    text("What color do you want your creature to be?", width/2, height/5 +25);
+    text("Type 'R' for red, 'Y' for yellow, 'B' for blue,", width/2, height - (height/5));
+    text("'G' for greyscale, and 'P' for pink.", width/2, height - (height/5) + 25);
+  }
+  else if (Kiki.days == (Kiki.startingDays - 2)) {
+    textSize(25);
+    text("Do you want your creature to be", width/2, height/5);
+    text("a boy or a girl?", width/2, height/5 + 25);
+    text("Type 'B' for boy and 'G' for girl.", width/2, height - (height/5));
+  }
+  else if (Kiki.days == (Kiki.startingDays - 3)) {
+    textSize(25);
+    text("What do you want to name your creature?", width/2, height/5);
+    text("Please enter your name and press Enter.", width/2, height - (height/5));
+  }
+
+  if (Kiki.days >= (Kiki.startingDays - 3) && Kiki.days != Kiki.startingDays) {
+    image(Egg, 200, 200);
+  }
+  else if (Kiki.days < (Kiki.startingDays - 3) && Kiki.days > 0) {
+    fill(255);
+    smooth();
+    stroke(0);
+    strokeWeight(5);
+    rect(50, 50, 250, 100);
+    fill(0);
+    textSize(40);
+    text(saved, 166, 98);
+    drawKeys();
+    drawCalender();
+    body.display();
+    statDisplay.display();
+    if (frameCount%650 < 5) {
+      eyes.blink();
+    }
+    else {
+      eyes.display();
+      if (Kiki.inSpace()) {
+        body.blush();
+      }
+    }
+  }
+  else if (Kiki.days <= 0 && !Kiki.won() && !Kiki.lost()) {
+    fill(255);
+    rectMode(CORNERS);
+    rect(25, 100, 275, 125);
+    rect(325, 100, 575, 125);
+    rectMode(CORNER);
+    fill(255,0,0);
+    strokeWeight(2);
+    rect(25,100,(Kiki.healthLevel* 250)/Kiki.startingHealth, 25);
+    rect(325, 100, (Kiki.opponentHealth * 250)/(1250 * Kiki.battleNumber), 25);
+    player.mute();
+    if (player2.isPlaying() == false) {
+      player2.play();
+    }
+    body.battleDisplay();
+    fill(0);
+    text("BATTLE", 300, 50);
+    text(Kiki.battleNumber, 300, 75);
+    if (Kiki.losing == false) {
+      if (Kiki.battleNumber == 1) {
+      image(RP, 400, 150);
+      }
+      else if (Kiki.battleNumber == 2) {
+        image(Q, 350, 160);
+      }
+      else if (Kiki.battleNumber == 3) {
+        image(RPid, 315, 175);
+      }
+      else if (Kiki.battleNumber == 4) {
+        image(RS, 300, 170);
+      }
+      else if (Kiki.battleNumber == 5) {
+        image(RB, 300, 300);
+      }
+    }
+    else if (Kiki.losing == true) {
+      if (Kiki.battleNumber == 1) {
+      image(P, 370, 200);
+      }
+      else if (Kiki.battleNumber == 2) {
+        image(RQ, 300, 150);
+      }
+      else if (Kiki.battleNumber == 3) {
+        image(Pid, 300, 110);
+      }
+      else if (Kiki.battleNumber == 4) {
+        image(S, 300, 20);
+      }
+      else if (Kiki.battleNumber == 5) {
+        image(B, 300, 300);
+      }      
+    }
+    drawBattleKeys();
+  }
+  else if (Kiki.days <= 0 && Kiki.lost()) {
+    textSize(70);
+    text("You have lost", 300, 300, 50);
+  }
+}
+
+void drawKeys() {
+  Key Key1, Key2, Key3, Key4, Key5;
+  Key1 = new Key(50, "F", "FEED"); 
+  Key2 = new Key(162, "T", "TRAIN");
+  Key3 = new Key(274, "R", "REST");
+  Key4 = new Key(386, "P", "PLAY");
+  Key5 = new Key(496, "I", "INFO");
+}
+
+void drawBattleKeys() {
+  BattleKey battleKey1, battleKey2, battleKey3, battleKey4;
+  battleKey1 = new BattleKey(50, "K", "KICK");
+  battleKey2 = new BattleKey(200, "P", "PUNCH");
+  battleKey3 = new BattleKey(350, "T", "THROW");
+  battleKey4 = new BattleKey(500, "I", "INFO");
+}
+
+void drawCalender() {
+  image(Calender, 450, 15);
+  textSize(70);
+  text(Kiki.days, 525, 90);
+}
+
+void keyPressed() {
+  keyManager.command();
+}
+
+void info() {
+}
+
+/*
+* Music - 8-bit 2 - Fall Out Boy thegreenguitar
+ */
