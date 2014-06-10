@@ -1,0 +1,153 @@
+class KeyManager {
+
+  KeyManager() {
+  }
+
+  void command() {
+    if (keyPressed) {
+      if (Kiki.days > 0) {
+        if (Kiki.days == Kiki.startingDays) {
+          Kiki.days -= 1;
+        }
+        else if (Kiki.days == (Kiki.startingDays - 1)) {
+          if (key == 'R' || key == 'r') {
+            body = new Body('R');
+            println("Your creature will be red.");
+            Kiki.days -= 1;
+          }
+          else if (key == 'Y'|| key == 'y') {
+            body = new Body('Y');
+            println("Your creature will be yellow.");
+            Kiki.days -= 1;
+          }
+          else if (key == 'B'|| key == 'b') {
+            body = new Body('B');
+            println("Your creature will be blue.");
+            Kiki.days -= 1;
+          }
+          else if (key == 'P'|| key == 'p') {
+            body = new Body('P');
+            println("Your creature will be pink.");
+            Kiki.days -= 1;
+          }
+          else if (key == 'G' || key == 'g') {
+            body = new Body('G');
+            println("Your creature will be greyscale.");
+            Kiki.days -= 1;
+          }
+          else {
+            println("That is not a valid choice. Please press again.");
+          }
+        }
+        else if (Kiki.days == (Kiki.startingDays - 2)) {
+          if (key == 'B' || key == 'b') {
+            eyes = new Eyes('B');
+            println("Your creature will be a boy.");
+            Kiki.days -= 1;
+          }
+          else if  (key == 'G' || key == 'g') {
+            eyes = new Eyes('G');
+            println("Your creature will be a girl.");
+            Kiki.days -= 1;
+          }
+          else {
+            println("That is not a valid choice. Please press again.");
+          }
+        }
+        else if (Kiki.days == (Kiki.startingDays - 3)) {
+
+          if (key == '\n' ) {
+            saved = typing;
+            println();
+            println("You have named the creature " + saved);
+            println("In 30 days, you will be in a monster competition.");
+            println("You must play, rest, feed, and train your creature in order to get it ready.");
+            Kiki.days -= 1;          
+            println("Press I for details about the actions. You have " + Kiki.days + " days. Good luck!");
+          }
+          if (keyCode != 20 && keyCode != 16) {
+            typing += key;
+            print(key);
+          }
+        }
+        else if (Kiki.days <= (Kiki.startingDays - 4)) {
+
+          if (key == 'f' || key == 'F') {
+            println(saved + "'s Feeding Time!");
+            Kiki.feed();
+            println("Strength: " + Kiki.strengthLevel + " Love: " + Kiki.loveLevel + " Hunger: " + Kiki.hungerLevel + " Energy: " + Kiki.energyLevel + " Days: " + Kiki.days);
+          } 
+          else if (key == 't' || key == 'T') {
+            println(saved + "'s Training Time!");
+            Kiki.train();
+            println("Strength: " + Kiki.strengthLevel + " Love: " + Kiki.loveLevel + " Hunger: " + Kiki.hungerLevel + " Energy: " + Kiki.energyLevel + " Days: " + Kiki.days);
+          } 
+          else if (key == 'p' || key == 'P') {
+            println(saved + "'s Play Time!");
+            Kiki.play();
+            println("Strength: " + Kiki.strengthLevel + " Love: " + Kiki.loveLevel + " Hunger: " + Kiki.hungerLevel + " Energy: " + Kiki.energyLevel + " Days: " + Kiki.days);
+          }
+          else if (key == 'r' || key == 'R') {
+            println(saved + "'s Sleepy Time...");
+            Kiki.rest();
+            println("Strength: " + Kiki.strengthLevel + " Love: " + Kiki.loveLevel + " Hunger: " + Kiki.hungerLevel + " Energy: " + Kiki.energyLevel + " Days: " + Kiki.days);
+          }
+          else if (key == 'i' || key == 'I') {
+            if (inform == false){
+              inform = true;
+            }
+            else {
+              inform = false;
+            }
+            info();
+            println("Feed gives " + saved + " some food. Feeding your creature makes it love you more and become a little more awake. Press F to feed.");
+            println("Play allows you and " + saved + " to play. Playing makes your creature more tired and hungry, but has great benefits when it comes to training. Press P to play.");
+            println("Training makes " + saved + " stronger, but takes food and energy. Press T to train.");
+            println("Rest lets " + saved + " sleep for the day. A good amount of resting will make your creature more tougher. Press R to rest.");
+          }
+        }
+      }
+      else if (Kiki.days <= 0) {
+        if (key == 'k' || key == 'K') {
+          if (Kiki.battleNumber == 4 && Kiki.battlecounter % 2 == 0) {
+            println("Your opponent was slacking off!");
+            Kiki.win();
+          }
+          else {
+            Kiki.battle(1);
+          }
+        }
+        else if (key == 'p' || key == 'P') {
+          if (Kiki.battleNumber == 4 && Kiki.battlecounter % 2 == 0) {
+            println("Your opponent was slacking off!");
+            Kiki.win();
+          }
+          else {
+            Kiki.battle(2);
+          }
+        }
+        else if (key == 't' || key == 'T') {
+          if (Kiki.battleNumber == 4 && Kiki.battlecounter % 2 == 0) {
+            println("Your opponent was slacking off!");
+            Kiki.win();
+          }
+          else {
+            Kiki.battle(3);
+          }
+        }
+        else if (key == 'i' || key == 'I') {
+          info();
+          println("Battle your opponent using kicking, punching, and throwing!");
+          println("Kick defeats punch, punch defeats throw, and throw defeats kick.");
+          println("Press K for kick, P for punch, and T for throw.");
+          println("If you win, you do damage to your opponent, but if he wins, he does damage to you.");
+          println("Your HP is " + Kiki.healthLevel);
+          println("Your opponent's HP is " + Kiki.opponentHealth);
+        }
+        else {
+          println("That is not a valid choice. Press reselect.");
+        }
+      }
+    }
+  }
+}
