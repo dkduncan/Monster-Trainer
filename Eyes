@@ -1,0 +1,38 @@
+class Eyes {
+  char gender;
+  
+  Eyes(char choice) {
+    gender = choice;
+  }
+  
+void display() {
+  //eyes
+  fill(0);
+  ellipse(260, 250, 20, 50);
+  ellipse(340, 250, 20, 50);
+
+  if (gender == 'G') {
+    stroke(0);
+    line(251, 231, 248, 228);
+    line(346, 231, 351, 228);
+  }
+
+  //eye shine - left
+  noStroke();
+  fill(255);
+  ellipse(258, 260, 10, 15);
+  ellipse(264, 245, 10, 15);
+  //eye shine - right
+  ellipse(338, 260, 10, 15);
+  ellipse(344, 245, 10, 15);
+}  
+
+
+void blink() {
+  stroke(0);
+  strokeWeight(3);
+  line(250, 250, 275, 250);
+  line(325, 250, 350, 250);
+}
+  
+}
